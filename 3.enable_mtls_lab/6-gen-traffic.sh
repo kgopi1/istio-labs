@@ -1,0 +1,1 @@
+while true; do curl http://argocd.cloudlabs.com:32464/ ;done 

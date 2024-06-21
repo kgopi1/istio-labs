@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tools
+  name: tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tools
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: tools
+    spec:
+      containers:
+      - image: ubuntu:latest
+        name: tools-pod
+        args: [ "sleep", "1000"]
+        resources: {}

@@ -1,0 +1,1 @@
+while true; do curl -H "Host: customers.default.svc.cluster.local" http://argocd.cloudlabs.com:32464/ ;done 
