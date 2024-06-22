@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: foo
+  name: foo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foo
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: foo
+    spec:
+      containers:
+      - image: hashicorp/http-echo:0.2.3
+        name: foo-pod
+        args:
+        - "-text=foo"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: foo-service
+spec:
+  type: ClusterIP
+  selector:
+    app: foo
+  ports:
+    # Default port used by the image
+    - port: 5678
+      targetPort: 5678
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample-app-tls-ingress
+  #annotations:
+   #nginx.ingress.kubernetes.io/service-upstream: "true"
+   #nginx.ingress.kubernetes.io/upstream-vhost: foo-service.default.svc.cluster.local
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - argocd.cloudlabs.com
+      secretName: tls-secret
+  rules:
+    - host: argocd.cloudlabs.com
+      http:
+        paths:
+          - path: "/foo"
+            pathType: Prefix
+            backend:
+              service:
+                name: foo-service
+                port:
+                  number: 5678

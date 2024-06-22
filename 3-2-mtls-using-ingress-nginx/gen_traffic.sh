@@ -1,0 +1,1 @@
+while true; do curl -k https://argocd.cloudlabs.com:32000/foo ; done
