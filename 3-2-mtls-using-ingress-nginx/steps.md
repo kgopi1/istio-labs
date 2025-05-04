@@ -18,10 +18,19 @@ kubectl label namespace ingress-nginx istio-injection=enabled
 ![namespace_labels](3.namespace_labels.png)
 
 4. Restart the pods in application and ingress-nginx namespace. 
+```
+kubectl rollout restart deploy -n ingress-nginx
+kubectl rollout restart deploy foo-app -n default 
+```
+
 
 ![pods_with_istio](4.pods_with_istio.png)
 
 5. Verify application 
+Launch dashboard 
+```
+istioctl dashboard kiali 
+```
 ![app_without_mtls](5.kiali_status.png)
 
 

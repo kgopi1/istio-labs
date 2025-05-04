@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: bar
+  name: bar-app
+  namespace: bar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bar
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: bar
+    spec:
+      containers:
+      - image: hashicorp/http-echo:0.2.3
+        name: bar-pod
+        args:
+        - "-text=bar"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bar-service
+  namespace: bar
+spec:
+  type: ClusterIP
+  selector:
+    app: bar
+  ports:
+    # Default port used by the image
+    - port: 5678
+      targetPort: 5678
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bar-app-tls-ingress
+  namespace: bar
+  annotations:
+   nginx.ingress.kubernetes.io/service-upstream: "true"
+   nginx.ingress.kubernetes.io/upstream-vhost: bar-service.default.svc.cluster.local
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - argocd.cloudlabs.com
+      secretName: tls-secret
+  rules:
+    - host: argocd.cloudlabs.com
+      http:
+        paths:
+          - path: "/bar"
+            pathType: Prefix
+            backend:
+              service:
+                name: bar-service
+                port:
+                  number: 5678

@@ -5,6 +5,7 @@ metadata:
   labels:
     app: tools
   name: tools
+  namespace: tools
 spec:
   replicas: 1
   selector:
